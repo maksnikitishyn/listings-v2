@@ -1,5 +1,5 @@
 {
-  "name": "@repliers/listings-v2-mapper",
+  "name": "repliers-listings-v2-mapper",
   "version": "1.0.4",
   "description": "",
   "main": "index.js",
