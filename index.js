@@ -44,6 +44,9 @@ const toNumber = (str) => {
     return null
 }
 const get12HoursTime = (str) => {
+    if (!str) {
+        return str;
+    }
     if (str && str.length === 4) {
         return str.slice(0, 2) + ":" + str.slice(2, 4) + ":00";
 
