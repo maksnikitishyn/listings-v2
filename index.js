@@ -77,6 +77,14 @@ const normalizeOpenHouse = (openHouse) => {
                 if (h.endTime && h.endTime.length === 8) {
                     h.endTime = `${h.date}T${h.endTime}.000-00:00`
                 }
+                if (h.startTime && h.endTime) {
+                    const start = new Date(h.startTime);
+                    let end = new Date(h.endTime);
+                    if (end <= start) {
+                        end.setDate(end.getDate() + 1);
+                        h.endTime = end.toISOString().replace("Z", "-00:00");
+                    }
+                }
             }
 
         })
