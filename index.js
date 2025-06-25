@@ -10,6 +10,7 @@ function isObjectEmpty(obj) {
     }
     return true;
 }
+
 function replaceEmptyStringsWithNull(obj) {
     if (Array.isArray(obj)) {
         for (let i = 0; i < obj.length; i++) {
@@ -26,6 +27,7 @@ function replaceEmptyStringsWithNull(obj) {
     }
     return obj;
 }
+
 const toDateTimeString = (str) => {
     if (str) {
         return str.slice(0, 23) + "-00:00"
@@ -43,6 +45,7 @@ const toNumber = (str) => {
     }
     return null
 }
+
 const get12HoursTime = (str) => {
     if (!str) {
         return str;
@@ -62,6 +65,7 @@ const get12HoursTime = (str) => {
     }
     return str
 }
+
 const normalizeOpenHouse = (openHouse) => {
     let openHouseN = JSON.parse(JSON.stringify(openHouse));
     try {
@@ -115,8 +119,6 @@ const normalizeOpenHouse = (openHouse) => {
     }
     return openHouse;
 };
-
-
 
 function isDefinedAndNotNull(value) {
     return value !== undefined && value !== null;
@@ -264,8 +266,54 @@ const mapListingsV2 = (listing) => {
     return newList;
 }
 
+function flattenRawArrayOfObjects(array, prefix) {
+  const result  = {};
+
+  array.forEach((unit, index) => {
+    for (const [key, value] of Object.entries(unit)) {
+      result[`${prefix}_${index}_${key}`] = value;
+    }
+  });
+
+  return result;
+}
+
+function unflattenRawArrayOfObjects(flatObject, prefix) {
+    if (!flatObject || typeof flatObject !== 'object') {
+        return;
+    }
+
+    const prefixPattern = prefix + '_';
+    const result = [];
+
+    for (const key in flatObject) {
+        if (!key.startsWith(prefixPattern)) continue;
+
+        const parts = key.split('_');
+        if (parts.length < 3) continue;
+
+        const index = parseInt(parts[1], 10);
+        if (isNaN(index) || index < 0) continue; // Skip invalid indices
+
+        const field = parts.slice(2).join('_');
+
+        if (!result[index]) {
+            result[index] = {};
+        }
+        result[index][field] = flatObject[key];
+        delete flatObject[key];
+    }
+
+    // Filter out undefined elements and assign
+    if(!result.length){ return; }
+    flatObject[prefix] = result.filter(item => item !== undefined);
+    return flatObject;
+}
+
 module.exports = {
-    mapListingsV2: mapListingsV2
+    mapListingsV2: mapListingsV2,
+    flattenRawArrayOfObjects: flattenRawArrayOfObjects,
+    unflattenRawArrayOfObjects: unflattenRawArrayOfObjects,
 }
 
 const t = {
