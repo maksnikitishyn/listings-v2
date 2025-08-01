@@ -156,7 +156,7 @@ const mapListingsV2 = (listing) => {
                 }
             }
         }
-        if (newListing.class !== 'CondoProperty') {
+        if (newListing.class && newListing.class !== 'CondoProperty') {
             delete newListing.condominium
         }
         if (newListing.condominium) {
