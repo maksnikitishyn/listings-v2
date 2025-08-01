@@ -156,18 +156,18 @@ const mapListingsV2 = (listing) => {
                 }
             }
         }
-        if (newListing.class === 'CondoProperty') {
-            if (newListing.condominium) {
-                if (newListing.condominium.ammenities) {
-                    newListing.condominium.amenities = newListing.condominium.ammenities.filter(a => a);
-                    delete newListing.condominium?.ammenities
-                }
-                if (newListing.condominium.fees) {
-                    newListing.condominium.fees.maintenance = toNumber(newListing.condominium.fees.maintenance);
-                }
-            }
-        } else {
+        if (newListing.class !== 'CondoProperty') {
             delete newListing.condominium
+        }
+        if (newListing.condominium) {
+            //fix amenities spelling
+            if (newListing.condominium.ammenities) {
+                newListing.condominium.amenities = newListing.condominium.ammenities.filter(a => a);
+                delete newListing.condominium?.ammenities
+            }
+            if (newListing.condominium.fees) {
+                newListing.condominium.fees.maintenance = toNumber(newListing.condominium.fees.maintenance);
+            }
         }
         if (newListing.nearby?.ammenities) {
 
@@ -267,15 +267,15 @@ const mapListingsV2 = (listing) => {
 }
 
 function flattenRawArrayOfObjects(array, prefix) {
-  const result  = {};
+    const result = {};
 
-  array.forEach((unit, index) => {
-    for (const [key, value] of Object.entries(unit)) {
-      result[`${prefix}_${index}_${key}`] = value;
-    }
-  });
+    array.forEach((unit, index) => {
+        for (const [key, value] of Object.entries(unit)) {
+            result[`${prefix}_${index}_${key}`] = value;
+        }
+    });
 
-  return result;
+    return result;
 }
 
 function unflattenRawArrayOfObjects(flatObject, prefix) {
@@ -305,7 +305,7 @@ function unflattenRawArrayOfObjects(flatObject, prefix) {
     }
 
     // Filter out undefined elements and assign
-    if(!result.length){ return; }
+    if (!result.length) { return; }
     flatObject[prefix] = result.filter(item => item !== undefined);
     return flatObject;
 }
@@ -316,7 +316,7 @@ module.exports = {
     unflattenRawArrayOfObjects: unflattenRawArrayOfObjects,
 }
 
-const t = {
+const testData = {
     "mlsNumber": "NWM2232648",
     "resource": "Property:6999",
     "status": "A",
@@ -754,4 +754,4 @@ const t = {
     "simpleDaysOnMarket": 337,
     "standardStatus": "Active"
 }
-mapListingsV2([t])
+//mapListingsV2([testData])
